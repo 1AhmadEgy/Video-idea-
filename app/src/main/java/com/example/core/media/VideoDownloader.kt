@@ -9,7 +9,7 @@ import javax.inject.Singleton
 
 @Singleton
 class VideoDownloader @Inject constructor(
-    @dagger.hilt.android.qualifiers.ApplicationContext private val context: Context
+    @param:dagger.hilt.android.qualifiers.ApplicationContext private val context: Context
 ) {
     fun download(
         url: String,

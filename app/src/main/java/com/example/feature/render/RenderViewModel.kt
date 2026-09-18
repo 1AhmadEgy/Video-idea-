@@ -10,6 +10,7 @@ import com.example.domain.usecase.StartFinalRenderUseCase
 import com.example.core.database.dao.SceneDao
 import com.example.core.media.VideoDownloader
 import com.example.core.media.MediaStoreSaver
+import com.example.core.media.VideoShareManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,12 +26,18 @@ class RenderViewModel @Inject constructor(
     private val startFinalRender: StartFinalRenderUseCase,
     private val sceneDao: SceneDao,
     private val videoDownloader: VideoDownloader,
-    private val mediaStoreSaver: MediaStoreSaver
+    private val mediaStoreSaver: MediaStoreSaver,
+    private val videoShareManager: VideoShareManager
 ) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(RenderUiState())
     val uiState: StateFlow<RenderUiState> = _uiState.asStateFlow()
     private val workManager = WorkManager.getInstance(application)
+
+    fun shareVideo() {
+        val url = _uiState.value.outputVideoUrl ?: return
+        videoShareManager.shareUrl(url)
+    }
 
     fun startRender(projectId: String) {
         _uiState.update { RenderUiState(isRunning = true, progress = 0, stage = "queued") }

@@ -28,7 +28,7 @@ object DatabaseModule {
             AppDatabase::class.java,
             "fikra_video.db"
         )
-            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigration(false)
             .addMigrations(
                 com.example.core.database.MIGRATION_1_2,
                 com.example.core.database.MIGRATION_2_3,

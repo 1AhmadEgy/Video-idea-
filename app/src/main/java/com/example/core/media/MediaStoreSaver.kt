@@ -12,7 +12,7 @@ import javax.inject.Singleton
 
 @Singleton
 class MediaStoreSaver @Inject constructor(
-    @dagger.hilt.android.qualifiers.ApplicationContext private val context: Context
+    @param:dagger.hilt.android.qualifiers.ApplicationContext private val context: Context
 ) {
     suspend fun saveVideo(
         videoUrl: String,

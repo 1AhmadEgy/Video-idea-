@@ -11,7 +11,7 @@ import javax.inject.Singleton
 
 @Singleton
 class OrphanMediaCleaner @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val assetDao: AssetDao
 ) {
     suspend fun clean() = withContext(Dispatchers.IO) {

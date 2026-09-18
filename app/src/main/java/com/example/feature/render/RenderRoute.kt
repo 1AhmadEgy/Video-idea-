@@ -29,9 +29,7 @@ fun RenderRoute(
         onStartRender = { viewModel.startRender(projectId) },
         onCancelRender = { viewModel.cancelRender(projectId) },
         onShare = {
-            state.outputVideoUrl?.let { url ->
-                shareVideoUrl(context = context, url = url)
-            }
+            viewModel.shareVideo()
         },
         onDownload = {
             viewModel.saveVideo() // Using MediaStoreSaver for better modern compatibility
@@ -39,12 +37,4 @@ fun RenderRoute(
         onRenderAgain = { viewModel.startRender(projectId) },
         onBack = onBack
     )
-}
-
-private fun shareVideoUrl(context: Context, url: String) {
-    val intent = Intent(Intent.ACTION_SEND).apply {
-        type = "text/plain"
-        putExtra(Intent.EXTRA_TEXT, url)
-    }
-    context.startActivity(Intent.createChooser(intent, "مشاركة الفيديو"))
 }

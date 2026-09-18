@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,6 +17,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
@@ -23,8 +27,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -38,6 +47,31 @@ fun StoryboardScreen(
     onBack: () -> Unit,
     onNavigateToEditor: () -> Unit
 ) {
+    var showRegenerateDialog by remember { mutableStateOf(false) }
+
+    if (showRegenerateDialog) {
+        AlertDialog(
+            onDismissRequest = { showRegenerateDialog = false },
+            title = { Text("إعادة توليد المشاهد") },
+            text = { Text("هل تريد إعادة توليد المشاهد بالذكاء الاصطناعي بناءً على فكرة المشروع؟") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showRegenerateDialog = false
+                        onAction(StoryboardAction.GenerateScript)
+                    }
+                ) {
+                    Text("توليد")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showRegenerateDialog = false }) {
+                    Text("إلغاء")
+                }
+            }
+        )
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -48,6 +82,27 @@ fun StoryboardScreen(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "العودة"
                         )
+                    }
+                },
+                actions = {
+                    if (state.scenes.isNotEmpty()) {
+                        IconButton(
+                            onClick = { showRegenerateDialog = true },
+                            enabled = !state.isGenerating
+                        ) {
+                            if (state.isGenerating) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(20.dp),
+                                    strokeWidth = 2.dp
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Default.AutoAwesome,
+                                    contentDescription = "إعادة توليد المشاهد",
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
                     }
                 }
             )
@@ -156,7 +211,7 @@ fun StoryboardScreen(
                 
                 // Add padding at the bottom so the FABs don't hide the last item
                 item {
-                    Box(modifier = Modifier.padding(120.dp))
+                    Spacer(modifier = Modifier.height(120.dp))
                 }
             }
         }
